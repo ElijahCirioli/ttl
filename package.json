@@ -4,9 +4,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "node src/server.js",
+		"dev": "npx tsx src/server/server.ts",
 		"build": "next build",
-		"start": "NODE_ENV=production node src/server.js",
+		"start": "NODE_ENV=production node server.ts",
 		"lint": "next lint"
 	},
 	"dependencies": {

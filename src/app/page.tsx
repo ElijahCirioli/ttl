@@ -1,44 +1,11 @@
-"use client";
+import { getProfile } from "@/lib/cookies";
+import DataViewer from "@/components/DataViewer";
+import { redirect } from "next/navigation";
 
-import { useEffect, useState } from "react";
-import { socket } from "@/lib/socket";
-
-export default function Home() {
-	const [isConnected, setIsConnected] = useState(false);
-	const [transport, setTransport] = useState("N/A");
-
-	useEffect(() => {
-		if (socket.connected) {
-			onConnect();
-		}
-
-		function onConnect() {
-			setIsConnected(true);
-			setTransport(socket.io.engine.transport.name);
-
-			socket.io.engine.on("upgrade", (transport) => {
-				setTransport(transport.name);
-			});
-		}
-
-		function onDisconnect() {
-			setIsConnected(false);
-			setTransport("N/A");
-		}
-
-		socket.on("connect", onConnect);
-		socket.on("disconnect", onDisconnect);
-
-		return () => {
-			socket.off("connect", onConnect);
-			socket.off("disconnect", onDisconnect);
-		};
-	}, []);
-
-	return (
-		<div>
-			<p>Status: {isConnected ? "connected" : "disconnected"}</p>
-			<p>Transport: {transport}</p>
-		</div>
-	);
+export default async function Home() {
+	const profile = await getProfile();
+	if (profile) {
+		return <DataViewer profile={profile} />;
+	}
+	return redirect("/login");
 }
