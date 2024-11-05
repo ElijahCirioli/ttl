@@ -1,8 +1,8 @@
 import { submitLoginForm } from "@/actions/login";
-import { getProfile } from "@/lib/cookies";
+import { getProfileId } from "@/lib/cookies";
 
 export default async function Home() {
-	const profile = await getProfile();
+	const profile = await getProfileId();
 
 	return (
 		<form action={submitLoginForm}>
