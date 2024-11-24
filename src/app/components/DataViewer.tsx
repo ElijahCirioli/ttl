@@ -1,22 +1,23 @@
 "use client";
 
 import { refreshProfile } from "@/actions/refreshCookies";
+import Profile from "@/lib/models/Profile";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 interface DataViewerProps {
-	profile: string;
+	profile: Profile;
 }
 
 const DataViewer: React.FC<DataViewerProps> = ({ profile }: DataViewerProps) => {
 	const [socketConnected, setSocketConnected] = useState(false);
 
 	useEffect(() => {
-		refreshProfile(profile);
+		refreshProfile(profile.id);
 
 		const socket = io({
 			extraHeaders: {
-				profile: profile,
+				profile: profile.id,
 			},
 		});
 
@@ -39,12 +40,12 @@ const DataViewer: React.FC<DataViewerProps> = ({ profile }: DataViewerProps) => 
 			socket.off("connect", onConnect);
 			socket.off("disconnect", onDisconnect);
 		};
-	}, [profile]);
+	}, [profile.id]);
 
 	return (
 		<div>
 			<p>Status: {socketConnected ? "connected" : "disconnected"}</p>
-			<p>Profile: {profile}</p>
+			<p>Profile: {profile.id}</p>
 		</div>
 	);
 };

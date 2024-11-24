@@ -1,6 +1,6 @@
-import { createTables } from "@/lib/db";
-import { createServer } from "node:http";
+import SQLite from "@/lib/db/SQLite";
 import next from "next";
+import { createServer } from "node:http";
 import { Server, Socket } from "socket.io";
 
 const dev = process.env.NODE_ENV !== "production";
@@ -14,7 +14,9 @@ await app.prepare();
 const httpServer = createServer(handler);
 const io = new Server(httpServer);
 
-await createTables();
+const db = SQLite.default();
+await db.init();
+await db.createTables();
 
 io.on("connection", (socket: Socket) => {
 	const profile = socket.handshake.headers.profile as string | undefined;

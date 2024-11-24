@@ -1,17 +1,18 @@
+import { defaultSettings } from "./Settings";
+import Settings from "./Settings";
+import Card from "./Card";
+
 interface Profile {
 	id: string;
-	theme: Theme;
+	settings: Settings;
+	cards: Card[];
 }
 
-enum Theme {
-	LightMode = "LIGHT_MODE",
-	DarkMode = "DARK_MODE",
-}
-
-export function defaultSettings(profileId: string): Profile {
+export function defaultProfile(id: string): Profile {
 	return {
-		id: profileId,
-		theme: Theme.LightMode,
+		id,
+		settings: defaultSettings(),
+		cards: [],
 	};
 }
 

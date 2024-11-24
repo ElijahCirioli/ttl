@@ -1,6 +1,6 @@
 interface Stop {
 	id: string;
-	profile: string;
+	location: string;
 }
 
 export default Stop;
