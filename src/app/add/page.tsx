@@ -1,6 +1,12 @@
-import Trimet from "@/lib/transit/Trimet";
+import StopBrowser from "@/components/StopBrowser";
+import ProfileManager from "@/lib/ProfileManager";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
-	const trimet = Trimet.default();
-	return <p>Failed to get stops from TriMet</p>;
+	const profileManager = await ProfileManager.default();
+	const profile = await profileManager.getProfileFromCookies();
+	if (!profile) {
+		return redirect("/login");
+	}
+	return <StopBrowser />;
 }

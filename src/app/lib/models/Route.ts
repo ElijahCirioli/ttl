@@ -3,11 +3,12 @@ export enum RouteType {
 	StreetCar = "STREET_CAR",
 	LightRail = "LIGHT_RAIL",
 	Metro = "METRO",
+	CommuterRail = "COMMUTER_RAIL",
+	AerialTram = "AERIAL_TRAM",
 }
 
-interface Route {
+export interface Route {
 	id: string;
 	type: RouteType;
+	destination: string;
 }
-
-export default Route;

@@ -1,5 +1,9 @@
+import GetStopsResponse from "@/lib/models/trimet/GetStopsResponse";
+import Stop from "@/lib/models/Stop";
+import { Route, RouteType } from "@/lib/models/Route";
 import TransitService from "./TransitService";
 import StopService from "@/lib/models/StopService";
+import assert from "node:assert";
 
 class Trimet implements TransitService {
 	private BASE_URL = "https://developer.trimet.org/ws/V1/";
@@ -20,16 +24,51 @@ class Trimet implements TransitService {
 		return json as T;
 	}
 
+	private routeSubTypeConverter(subtype: string): RouteType {
+		const mappings = new Map([
+			["Bus", RouteType.Bus],
+			["BRT", RouteType.Bus],
+			["Shuttle", RouteType.Bus],
+			["Light Rail", RouteType.LightRail],
+			["Commuter Rail", RouteType.CommuterRail],
+			["Streetcar", RouteType.StreetCar],
+			["Aerial Tram", RouteType.AerialTram],
+		]);
+		const routeType = mappings.get(subtype);
+		assert(routeType, `Unexpected route subtype: '${subtype}'`);
+		return routeType;
+	}
+
 	async getStops(latitutde: number, longitude: number): Promise<StopService[]> {
-		const res = await this.makeRequest<object>(
+		const res = await this.makeRequest<GetStopsResponse>(
 			"stops",
 			new Map([
 				["ll", `${latitutde},${longitude}`],
 				["meters", "1000"],
+				["showRouteDirs", "true"],
 			])
 		);
-		console.log(res);
-		return [];
+		return res.resultSet.location.map((location) => {
+			const stop: Stop = {
+				id: location.locid,
+				location: location.desc,
+			};
+			const routes: Route[] = location.route.flatMap((route) =>
+				route.dir.map((dir) => {
+					return {
+						id: `${route.route}-${dir.dir}`,
+						type: this.routeSubTypeConverter(route.routeSubType),
+						destination: dir.desc,
+					};
+				})
+			);
+			return {
+				stop,
+				latitude: location.lat,
+				longitude: location.lng,
+				routes,
+			};
+		});
 	}
 
 	static default(): Trimet {
