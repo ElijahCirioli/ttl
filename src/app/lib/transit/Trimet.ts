@@ -1,5 +1,5 @@
 import GetStopsResponse from "@/lib/models/trimet/GetStopsResponse";
-import Stop from "@/lib/models/Stop";
+import Stop, { StopDirection } from "@/lib/models/Stop";
 import { Route, RouteType } from "@/lib/models/Route";
 import TransitService from "./TransitService";
 import StopService from "@/lib/models/StopService";
@@ -39,12 +39,34 @@ class Trimet implements TransitService {
 		return routeType;
 	}
 
+	private routeDirectionConverter(direction: string): StopDirection | undefined {
+		const mappings = new Map([
+			["Northbound", StopDirection.Northbound],
+			["Southbound", StopDirection.Southbound],
+			["Eastbound", StopDirection.Eastbound],
+			["Westbound", StopDirection.Westbound],
+		]);
+		return mappings.get(direction);
+	}
+
+	private routeTypeDisplayName(routeType: RouteType): string {
+		const mappings = {
+			[RouteType.Bus]: "Bus",
+			[RouteType.LightRail]: "Max",
+			[RouteType.StreetCar]: "Streetcar",
+			[RouteType.AerialTram]: "Aerial Tram",
+			[RouteType.CommuterRail]: "WES",
+			[RouteType.Metro]: "Metro",
+		};
+		return mappings[routeType];
+	}
+
 	async getStops(latitutde: number, longitude: number): Promise<StopService[]> {
 		const res = await this.makeRequest<GetStopsResponse>(
 			"stops",
 			new Map([
 				["ll", `${latitutde},${longitude}`],
-				["meters", "1000"],
+				["meters", "1600"],
 				["showRouteDirs", "true"],
 			])
 		);
@@ -52,21 +74,25 @@ class Trimet implements TransitService {
 			const stop: Stop = {
 				id: location.locid,
 				location: location.desc,
+				direction: this.routeDirectionConverter(location.dir),
 			};
 			const routes: Route[] = location.route.flatMap((route) =>
 				route.dir.map((dir) => {
+					const type = this.routeSubTypeConverter(route.routeSubType);
 					return {
-						id: `${route.route}-${dir.dir}`,
-						type: this.routeSubTypeConverter(route.routeSubType),
+						id: `${route.route}`,
+						type,
+						displayType: this.routeTypeDisplayName(type),
 						destination: dir.desc,
 					};
 				})
 			);
 			return {
 				stop,
+				routes,
 				latitude: location.lat,
 				longitude: location.lng,
-				routes,
+				distanceMeters: location.metersDistance,
 			};
 		});
 	}

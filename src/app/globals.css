@@ -1,42 +1,20 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+	--white-color: #fbfbfb;
+	--light-gray-color: #f1f1f1;
+	--dark-gray-color: #d1d1d1;
+	--black-color: #121212;
+	--blue-color: #084c8d;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+	background-color: var(--light-gray-color);
+	color: var(--black-color);
+	font-size: 1rem;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	min-height: 100vh;
+	width: 100%;
+	scrollbar-color: var(--blue-color);
+	scrollbar-width: thin;
 }

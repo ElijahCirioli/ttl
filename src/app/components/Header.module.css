@@ -1,0 +1,47 @@
+#header {
+	background-color: var(--blue-color);
+	height: 50px;
+	width: calc(100% - 60px);
+	padding: 20px 30px;
+	margin: 0;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	align-items: center;
+}
+
+#logoLink {
+	justify-self: flex-start;
+	align-self: center;
+	height: 50px;
+}
+
+#logo {
+	height: 50px;
+	width: auto;
+}
+
+#clock {
+	height: 50px;
+	line-height: 50px;
+	font-weight: bold;
+	color: var(--white-color);
+	font-size: 3em;
+	text-align: center;
+	align-self: center;
+	margin: 0;
+}
+
+.button {
+	height: 40px;
+	width: 40px;
+	outline: none;
+	border: none;
+	padding: 0;
+	margin: 0;
+	background-color: transparent;
+	color: var(--white-color);
+	font-size: 2em;
+	cursor: pointer;
+	justify-self: flex-end;
+	align-self: center;
+}

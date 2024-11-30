@@ -1,6 +1,8 @@
+import Header from "@/components/Header";
 import StopBrowser from "@/components/StopBrowser";
 import ProfileManager from "@/lib/ProfileManager";
 import { redirect } from "next/navigation";
+import styles from "./page.module.css";
 
 export default async function Home() {
 	const profileManager = await ProfileManager.default();
@@ -8,5 +10,12 @@ export default async function Home() {
 	if (!profile) {
 		return redirect("/login");
 	}
-	return <StopBrowser />;
+	return (
+		<>
+			<Header showEditButton={false} />
+			<main id={styles.main}>
+				<StopBrowser profile={profile} />
+			</main>
+		</>
+	);
 }
