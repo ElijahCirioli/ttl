@@ -1,0 +1,18 @@
+.route {
+	padding-left: 20px;
+}
+
+.routeTitle {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.routeTitle h4 {
+	font-size: 1.15em;
+	margin: 0;
+}

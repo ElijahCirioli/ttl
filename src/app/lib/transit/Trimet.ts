@@ -49,16 +49,13 @@ class Trimet implements TransitService {
 		return mappings.get(direction);
 	}
 
-	private routeTypeDisplayName(routeType: RouteType): string {
-		const mappings = {
-			[RouteType.Bus]: "Bus",
-			[RouteType.LightRail]: "Max",
-			[RouteType.StreetCar]: "Streetcar",
-			[RouteType.AerialTram]: "Aerial Tram",
-			[RouteType.CommuterRail]: "WES",
-			[RouteType.Metro]: "Metro",
-		};
-		return mappings[routeType];
+	private routeName(subtype: string, id: number, desc: string): string {
+		const mappings = new Map([
+			["Bus", `${id} Bus`],
+			["BRT", `FX${id}`],
+			["Streetcar", `${desc.split(" ")[3]} Streetcar`],
+		]);
+		return mappings.get(subtype) ?? desc;
 	}
 
 	async getStops(latitutde: number, longitude: number): Promise<StopService[]> {
@@ -78,12 +75,12 @@ class Trimet implements TransitService {
 			};
 			const routes: Route[] = location.route.flatMap((route) =>
 				route.dir.map((dir) => {
-					const type = this.routeSubTypeConverter(route.routeSubType);
 					return {
 						id: `${route.route}`,
-						type,
-						displayType: this.routeTypeDisplayName(type),
+						type: this.routeSubTypeConverter(route.routeSubType),
+						name: this.routeName(route.routeSubType, route.route, route.desc),
 						destination: dir.desc,
+						color: route.routeColor,
 					};
 				})
 			);

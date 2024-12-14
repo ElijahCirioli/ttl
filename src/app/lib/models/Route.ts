@@ -10,6 +10,7 @@ export enum RouteType {
 export interface Route {
 	id: string;
 	type: RouteType;
-	displayType: string;
+	name: string;
 	destination: string;
+	color?: string;
 }

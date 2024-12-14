@@ -1,29 +1,26 @@
 "use client";
 
-import { RouteType } from "@/lib/models/Route";
+import { Route } from "@/lib/models/Route";
+import { TransitIcon } from "@/components/icons/TransitIcon";
 import styles from "./StopRowRoute.module.css";
 
 interface StopRowRouteProps {
-	id: string;
-	routeType: RouteType;
-	routeDisplayType: string;
+	route: Route;
 	destinations: string[];
 }
 
-const StopRowRoute: React.FC<StopRowRouteProps> = ({
-	id,
-	routeType,
-	routeDisplayType,
-	destinations,
-}: StopRowRouteProps) => {
+const StopRowRoute: React.FC<StopRowRouteProps> = ({ route, destinations }: StopRowRouteProps) => {
 	return (
 		<div className={styles.route}>
-			<h4>
-				{id} {routeDisplayType}
-			</h4>
-			{destinations.map((dest) => (
-				<div key={dest}>{dest}</div>
-			))}
+			<div className={styles.routeTitle}>
+				<TransitIcon routeType={route.type} color={route.color ?? "black"} width={30} />
+				<h4>{route.name}</h4>
+			</div>
+			<div className={styles.destinationsWrap}>
+				{destinations.map((dest) => (
+					<div key={dest}>{dest}</div>
+				))}
+			</div>
 		</div>
 	);
 };

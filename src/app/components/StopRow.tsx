@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import StopService from "@/lib/models/StopService";
 import styles from "./StopRow.module.css";
-import { Route, RouteType } from "@/lib/models/Route";
+import { Route } from "@/lib/models/Route";
 import StopRowRoute from "./StopRowRoute";
 
 interface StopRowProps {
@@ -32,7 +32,7 @@ const StopRow: React.FC<StopRowProps> = ({ stopService }: StopRowProps) => {
 
 	return (
 		<article className={styles.stopService}>
-			<h3 className={styles.stopTitle} onClick={(e) => setCollapsed(!collapsed)}>
+			<h3 className={styles.stopTitle} onClick={() => setCollapsed(!collapsed)}>
 				<FontAwesomeIcon icon={collapsed ? faChevronDown : faChevronUp} className={styles.collapseIcon} />
 				{stopService.stop.location}
 				<span className={styles.stopTitleLocation}>{stopLocationStr}</span>
@@ -40,15 +40,7 @@ const StopRow: React.FC<StopRowProps> = ({ stopService }: StopRowProps) => {
 			<div className={`${styles.routesWrap} ${collapsed ? styles.hidden : ""}`}>
 				{routesById.entries().map(([routeId, routes]) => {
 					const destinations = routes.map((route) => route.destination);
-					return (
-						<StopRowRoute
-							key={routeId}
-							id={routeId}
-							routeType={routes[0].type}
-							routeDisplayType={routes[0].displayType}
-							destinations={destinations}
-						/>
-					);
+					return <StopRowRoute key={routeId} route={routes[0]} destinations={destinations} />;
 				})}
 			</div>
 		</article>

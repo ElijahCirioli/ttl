@@ -13,6 +13,7 @@ interface StopBrowserProps {
 
 const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) => {
 	const [stops, setStops] = useState<StopService[] | null>(null);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	useEffect(() => {
 		navigator.geolocation.getCurrentPosition((pos) => {
