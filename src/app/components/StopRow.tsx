@@ -10,9 +10,17 @@ import StopRowRoute from "./StopRowRoute";
 
 interface StopRowProps {
 	stopService: StopService;
+	isRouteSelected(route: Route): boolean;
+	selectRoute(route: Route): void;
+	unselectRoute(route: Route): void;
 }
 
-const StopRow: React.FC<StopRowProps> = ({ stopService }: StopRowProps) => {
+const StopRow: React.FC<StopRowProps> = ({
+	stopService,
+	isRouteSelected,
+	selectRoute,
+	unselectRoute,
+}: StopRowProps) => {
 	const [collapsed, setCollapsed] = useState(false);
 
 	// TODO: support metric output
@@ -39,7 +47,20 @@ const StopRow: React.FC<StopRowProps> = ({ stopService }: StopRowProps) => {
 			</h3>
 			<div className={`${styles.routesWrap} ${collapsed ? styles.hidden : ""}`}>
 				{routesById.entries().map(([routeId, routes]) => {
-					const destinations = routes.map((route) => route.destination);
+					const destinations = routes.map((route) => {
+						return {
+							name: route.destination,
+							isChecked: isRouteSelected(route),
+							toggledChecked: () => {
+								// TODO: make this less dumb
+								if (isRouteSelected(route)) {
+									unselectRoute(route);
+								} else {
+									selectRoute(route);
+								}
+							},
+						};
+					});
 					return <StopRowRoute key={routeId} route={routes[0]} destinations={destinations} />;
 				})}
 			</div>

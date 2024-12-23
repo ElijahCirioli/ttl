@@ -1,4 +1,5 @@
 import { RouteType } from "@/lib/models/Route";
+import style from "./TransitIcon.module.css";
 
 interface TransitIconProps {
 	routeType: RouteType;
@@ -21,8 +22,8 @@ export const TransitIcon: React.FC<TransitIconProps> = ({ routeType, color, widt
 			style={{
 				color,
 				width: `${width}px`,
-				height: "auto",
 			}}
+			className={style.transitIcon}
 		>
 			{mappings[routeType]}
 		</div>
@@ -46,7 +47,7 @@ const lightRailIcon = (
 		viewBox="40 0 472 512"
 		xmlSpace="preserve"
 	>
-		<g>
+		<g transform="translate(20, 0)">
 			<path
 				fill="currentColor"
 				d="M431.665,356.848V147.207c0-48.019-38.916-86.944-86.943-86.944h-40.363l4.812-42.824h8.813

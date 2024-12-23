@@ -1,5 +1,5 @@
 .route {
-	padding-left: 20px;
+	padding-left: 1.5em;
 }
 
 .routeTitle {
@@ -8,11 +8,47 @@
 	flex-wrap: nowrap;
 	justify-content: flex-start;
 	align-items: center;
-	gap: 10px;
-	margin-top: 10px;
+	gap: 0.6em;
+	margin-top: 0.8em;
 }
 
 .routeTitle h4 {
-	font-size: 1.15em;
+	font-size: 1.25em;
 	margin: 0;
+}
+
+.destination {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 0.6em;
+	margin-top: 0.6em;
+	padding-left: 0.4em;
+}
+
+.checkBox {
+	padding: 0;
+	margin: 0;
+	border: 1px solid var(--dark-gray-color);
+	padding: none;
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 0.35em;
+	background-color: var(--gray-color);
+	cursor: pointer;
+}
+
+.checked {
+	background-color: var(--blue-color);
+}
+
+.checkMark {
+	display: none;
+	color: var(--white-color);
+}
+
+.checked .checkMark {
+	display: block;
 }
