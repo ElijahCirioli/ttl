@@ -10,7 +10,7 @@ interface HeaderProps {
 	showEditButton: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ showEditButton }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = () => {
 	const [time, setTime] = useState("");
 
 	useEffect(() => {

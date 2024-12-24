@@ -80,7 +80,7 @@ class Trimet implements TransitService {
 						type: this.routeSubTypeConverter(route.routeSubType),
 						name: this.routeName(route.routeSubType, route.route, route.desc),
 						destination: dir.desc,
-						color: route.routeColor,
+						color: `#${route.routeColor}`,
 					};
 				})
 			);

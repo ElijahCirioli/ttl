@@ -6,10 +6,15 @@
 	"scripts": {
 		"dev": "npx tsx src/server/server.ts",
 		"build": "next build",
-		"start": "NODE_ENV=production npx tsx src/server/server.ts",
+		"start": "cross-env NODE_ENV=production npx tsx src/server/server.ts",
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome-svg-core": "^6.7.1",
+		"@fortawesome/free-brands-svg-icons": "^6.7.1",
+		"@fortawesome/free-regular-svg-icons": "^6.7.1",
+		"@fortawesome/free-solid-svg-icons": "^6.7.1",
+		"@fortawesome/react-fontawesome": "^0.2.2",
 		"dotenv": "^16.4.5",
 		"next": "15.1.0",
 		"react": "19.0.0",
@@ -17,17 +22,13 @@
 		"socket.io": "^4.8.1",
 		"socket.io-client": "^4.8.1",
 		"sqlite": "^5.1.1",
-		"sqlite3": "^5.1.7",
-		"@fortawesome/fontawesome-svg-core": "^6.7.1",
-		"@fortawesome/free-brands-svg-icons": "^6.7.1",
-		"@fortawesome/free-regular-svg-icons": "^6.7.1",
-		"@fortawesome/free-solid-svg-icons": "^6.7.1",
-		"@fortawesome/react-fontawesome": "^0.2.2"
+		"sqlite3": "^5.1.7"
 	},
 	"devDependencies": {
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
+		"cross-env": "^7.0.3",
 		"eslint": "^8",
 		"eslint-config-next": "15.0.2",
 		"typescript": "^5"

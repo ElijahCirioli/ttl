@@ -1,5 +1,5 @@
 import Stop from "./Stop";
-import Route from "./Route";
+import { Route } from "./Route";
 
 interface Card {
 	stop: Stop;

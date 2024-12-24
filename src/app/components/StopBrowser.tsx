@@ -15,13 +15,21 @@ interface StopBrowserProps {
 const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) => {
 	const [stops, setStops] = useState<StopService[] | null>(null);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
-	const [selectedRoutes, setSelectedRoutes] = useState<Set<Route>>(new Set());
+
+	const savedSelectedRoutes = new Set(profile.cards.flatMap((card) => card.routes));
+	const [selectedRoutes, setSelectedRoutes] = useState<Set<Route>>(savedSelectedRoutes);
 
 	useEffect(() => {
 		navigator.geolocation.getCurrentPosition(
 			(pos) => {
 				getStops(pos.coords.latitude, pos.coords.longitude)
-					.then((localStops) => setStops(localStops))
+					.then((localStops) => {
+						if (localStops.length > 0) {
+							setStops(localStops);
+						} else {
+							setErrorMessage("No stops found near your current location.");
+						}
+					})
 					.catch((err) => {
 						const errMessage = "Failed to get local stops from Trimet.";
 						console.error(errMessage, err);
