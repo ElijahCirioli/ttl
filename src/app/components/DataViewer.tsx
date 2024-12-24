@@ -1,9 +1,9 @@
 "use client";
 
-import { refreshProfile } from "@/actions/refreshCookies";
-import Profile from "@/lib/models/Profile";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { refreshProfile } from "@/actions/refreshCookies";
+import Profile from "@/lib/models/Profile";
 
 interface DataViewerProps {
 	profile: Profile;

@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styles from "./StopBrowser.module.css";
-import StopRow from "./StopRow";
 import { getStops } from "@/actions/getStops";
-import StopService from "@/lib/models/StopService";
 import Profile from "@/lib/models/Profile";
 import { Route } from "@/lib/models/Route";
+import StopService from "@/lib/models/StopService";
+import StopRow from "./StopRow";
+import styles from "./StopBrowser.module.css";
 
 interface StopBrowserProps {
 	profile: Profile;

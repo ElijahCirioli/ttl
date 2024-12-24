@@ -1,9 +1,9 @@
-import GetStopsResponse from "@/lib/models/trimet/GetStopsResponse";
-import Stop, { StopDirection } from "@/lib/models/Stop";
-import { Route, RouteType } from "@/lib/models/Route";
-import TransitService from "./TransitService";
-import StopService from "@/lib/models/StopService";
 import assert from "node:assert";
+import { Route, RouteType } from "@/lib/models/Route";
+import Stop, { StopDirection } from "@/lib/models/Stop";
+import StopService from "@/lib/models/StopService";
+import GetStopsResponse from "@/lib/models/trimet/GetStopsResponse";
+import TransitService from "./TransitService";
 
 class Trimet implements TransitService {
 	private BASE_URL = "https://developer.trimet.org/ws/V1/";

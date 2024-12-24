@@ -1,6 +1,6 @@
+import Card from "./Card";
 import { defaultSettings } from "./Settings";
 import Settings from "./Settings";
-import Card from "./Card";
 
 interface Profile {
 	id: string;

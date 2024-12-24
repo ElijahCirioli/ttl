@@ -1,8 +1,8 @@
+import { cookies } from "next/headers";
 import Db from "@/lib/db/Db";
+import SQLite from "@/lib/db/SQLite";
 import Profile from "@/lib/models/Profile";
 import { PROFILE_COOKIE_NAME } from "./constants";
-import SQLite from "@/lib/db/SQLite";
-import { cookies } from "next/headers";
 
 class ProfileManager {
 	private db: Db;

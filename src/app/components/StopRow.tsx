@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import StopService from "@/lib/models/StopService";
-import styles from "./StopRow.module.css";
+import { useState } from "react";
 import { Route } from "@/lib/models/Route";
+import StopService from "@/lib/models/StopService";
 import StopRowRoute from "./StopRowRoute";
+import styles from "./StopRow.module.css";
 
 interface StopRowProps {
 	stopService: StopService;

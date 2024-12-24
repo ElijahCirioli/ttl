@@ -1,7 +1,7 @@
-import SQLite from "@/lib/db/SQLite";
 import next from "next";
 import { createServer } from "node:http";
 import { Server, Socket } from "socket.io";
+import SQLite from "@/lib/db/SQLite";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";

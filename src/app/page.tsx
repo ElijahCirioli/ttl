@@ -1,6 +1,6 @@
+import { redirect } from "next/navigation";
 import DataViewer from "@/components/DataViewer";
 import ProfileManager from "./lib/ProfileManager";
-import { redirect } from "next/navigation";
 
 export default async function Home() {
 	console.log("pulling profile");

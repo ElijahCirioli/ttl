@@ -1,10 +1,10 @@
-import Db from "./Db";
-import Profile from "@/lib/models/Profile";
-import { DATABASE_FILE_PATH } from "@/lib/constants";
-import sqlite3 from "sqlite3";
-import { open, Database } from "sqlite";
-import { resolve } from "node:path";
 import assert from "node:assert";
+import { resolve } from "node:path";
+import { Database, open } from "sqlite";
+import sqlite3 from "sqlite3";
+import { DATABASE_FILE_PATH } from "@/lib/constants";
+import Profile from "@/lib/models/Profile";
+import Db from "./Db";
 
 class SQLite implements Db {
 	private filePath: string;

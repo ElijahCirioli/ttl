@@ -1,10 +1,10 @@
 "use server";
 
-import { PROFILE_COOKIE_NAME } from "@/lib/constants";
-import ProfileManager from "@/lib/ProfileManager";
-import { defaultProfile } from "@/lib/models/Profile";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import ProfileManager from "@/lib/ProfileManager";
+import { PROFILE_COOKIE_NAME } from "@/lib/constants";
+import { defaultProfile } from "@/lib/models/Profile";
 
 export async function submitLoginForm(data: FormData) {
 	const profileId = data.get("profileInput")?.valueOf().toString();
