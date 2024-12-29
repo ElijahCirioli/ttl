@@ -7,7 +7,7 @@ interface TransitIconProps {
 	width: number;
 }
 
-export const TransitIcon: React.FC<TransitIconProps> = ({ routeType, color, width }: TransitIconProps) => {
+const TransitIcon: React.FC<TransitIconProps> = ({ routeType, color, width }: TransitIconProps) => {
 	const mappings = {
 		[RouteType.Bus]: busIcon,
 		[RouteType.StreetCar]: lightRailIcon,
@@ -100,3 +100,5 @@ const aerialTramIcon = (
 		</g>
 	</svg>
 );
+
+export default TransitIcon;

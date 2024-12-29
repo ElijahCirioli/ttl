@@ -1,0 +1,43 @@
+.filter {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: nowrap;
+	gap: 0.1em;
+}
+
+.iconWrap {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: nowrap;
+	gap: 0.2em;
+}
+
+.checkBox {
+	padding: 0;
+	margin: 0;
+	border: 1px solid var(--dark-gray-color);
+	padding: none;
+	width: 1.8em;
+	height: 1.8em;
+	border-radius: 0.5em;
+	background-color: var(--gray-color);
+	cursor: pointer;
+	display: block;
+}
+
+.checked {
+	background-color: var(--blue-color);
+}
+
+.checkMark {
+	display: none;
+	color: var(--white-color);
+}
+
+.checked .checkMark {
+	display: block;
+}

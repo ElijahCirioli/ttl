@@ -1,10 +1,10 @@
 export enum RouteType {
-	Bus = "BUS",
-	StreetCar = "STREET_CAR",
-	LightRail = "LIGHT_RAIL",
-	Metro = "METRO",
-	CommuterRail = "COMMUTER_RAIL",
-	AerialTram = "AERIAL_TRAM",
+	Bus = "Bus",
+	StreetCar = "Streetcar",
+	LightRail = "Light Rail",
+	Metro = "Metro",
+	CommuterRail = "Commuter Rail",
+	AerialTram = "Aerial Tram",
 }
 
 export interface Route {

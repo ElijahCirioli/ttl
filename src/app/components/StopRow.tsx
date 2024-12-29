@@ -46,7 +46,7 @@ const StopRow: React.FC<StopRowProps> = ({
 				<span className={styles.stopTitleLocation}>{stopLocationStr}</span>
 			</h3>
 			<div className={`${styles.routesWrap} ${collapsed ? styles.hidden : ""}`}>
-				{routesById.entries().map(([routeId, routes]) => {
+				{Array.from(routesById.entries()).map(([routeId, routes]) => {
 					const destinations = routes.map((route) => {
 						return {
 							name: route.destination,

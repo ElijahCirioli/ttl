@@ -3,7 +3,7 @@
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Route } from "@/lib/models/Route";
-import { TransitIcon } from "@/components/icons/TransitIcon";
+import TransitIcon from "@/components/icons/TransitIcon";
 import styles from "./StopRowRoute.module.css";
 
 interface StopRowRouteProps {
