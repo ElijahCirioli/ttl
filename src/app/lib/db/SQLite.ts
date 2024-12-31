@@ -54,6 +54,13 @@ class SQLite implements Db {
 		await this.connection?.run(sql, [profile.id, JSON.stringify(profile)]);
 	}
 
+	async updateProfile(profile: Profile) {
+		this.assertConnection();
+		console.log("Updating Profile in table");
+		const sql = "UPDATE profiles SET profile = ? WHERE id = ?";
+		await this.connection?.run(sql, [JSON.stringify(profile), profile.id]);
+	}
+
 	static default(): SQLite {
 		return new SQLite(DATABASE_FILE_PATH);
 	}

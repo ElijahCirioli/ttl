@@ -11,12 +11,15 @@ export async function submitLoginForm(data: FormData) {
 	if (profileId) {
 		const profileManager = await ProfileManager.default();
 		const cookieStore = await cookies();
+
 		cookieStore.set(PROFILE_COOKIE_NAME, profileId, { sameSite: "strict", maxAge: 34560000 });
+
 		let profile = await profileManager.getProfileFromCookies();
 		if (!profile) {
 			profile = defaultProfile(profileId);
 			await profileManager.createProfile(profile);
 		}
+
 		if (profile.cards.length === 0) {
 			redirect("/add");
 		} else {

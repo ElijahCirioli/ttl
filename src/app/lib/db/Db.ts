@@ -5,6 +5,7 @@ interface Db {
 	createTables(): Promise<void>;
 	getProfile(id: string): Promise<Profile | undefined>;
 	createProfile(profile: Profile): Promise<void>;
+	updateProfile(profile: Profile): Promise<void>;
 }
 
 export default Db;

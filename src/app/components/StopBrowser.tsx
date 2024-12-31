@@ -3,6 +3,7 @@
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
+import { submitStops } from "@/actions/addStops";
 import { getStops } from "@/actions/getStops";
 import Profile from "@/lib/models/Profile";
 import { Route, RouteType } from "@/lib/models/Route";
@@ -21,6 +22,7 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [filters, setFilters] = useState<Map<RouteType, boolean>>(new Map());
 
+	// TODO: make this consider stops
 	const savedSelectedRoutes = new Set(profile.cards.flatMap((card) => card.routes));
 	const [selectedRoutes, setSelectedRoutes] = useState<Set<Route>>(savedSelectedRoutes);
 
@@ -30,11 +32,11 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 				getStops(pos.coords.latitude, pos.coords.longitude)
 					.then((localStops) => {
 						if (localStops.length > 0) {
-							setStops(localStops);
 							const routeTypes = Array.from(
 								new Set(localStops.flatMap((stop) => stop.routes.map((route) => route.type)))
 							);
 							setFilters(new Map(routeTypes.map((routeType) => [routeType, true])));
+							setStops(localStops);
 						} else {
 							setErrorMessage("No stops found near your current location.");
 						}
@@ -99,10 +101,42 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 		return [{ ...stop, routes: filteredRoutes }];
 	});
 
+	function submit() {
+		if (stops === null) {
+			return;
+		}
+		// TODO: make this less ugly
+		const existingRouteIdsByStopId = new Map(
+			profile.cards.map((card) => [card.stop.id, new Set(card.routes.map((route) => route.id))])
+		);
+		const cardsToAdd = stops.flatMap((stopService) => {
+			const existingRouteIds = existingRouteIdsByStopId.get(stopService.stop.id) ?? new Set();
+			const routesToAdd = stopService.routes.filter(
+				(route) => isRouteSelected(route) && !existingRouteIds.has(route.id)
+			);
+			if (routesToAdd.length === 0) {
+				return [];
+			}
+			return [{ stop: stopService.stop, routes: routesToAdd }];
+		});
+
+		const cardsToRemove = profile.cards.flatMap((card) => {
+			const routesToRemove = card.routes.filter((route) => !isRouteSelected(route));
+			if (routesToRemove.length === 0) {
+				return [];
+			}
+			return [{ ...card, routes: routesToRemove }];
+		});
+		submitStops(profile.id, cardsToAdd, cardsToRemove);
+	}
+
 	return (
 		<>
 			<div id={styles.controlsWrap}>
 				<FiltersPanel filters={filters} toggleFilter={toggleFilter} />
+				<button id={styles.submitButton} onClick={submit}>
+					Save selections
+				</button>
 			</div>
 			{filteredStops.length === 0 ? (
 				<h2>No nearby stops match your filter criteria.</h2>
