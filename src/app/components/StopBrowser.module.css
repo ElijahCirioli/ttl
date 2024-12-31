@@ -5,3 +5,7 @@
 	align-items: center;
 	gap: 0.5em;
 }
+
+.errorIcon {
+	color: var(--red-color);
+}

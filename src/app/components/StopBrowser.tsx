@@ -1,5 +1,7 @@
 "use client";
 
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { getStops } from "@/actions/getStops";
 import Profile from "@/lib/models/Profile";
@@ -51,6 +53,17 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 		);
 	}, []);
 
+	if (errorMessage !== null) {
+		return (
+			<h2>
+				<span className={styles.errorIcon}>
+					<FontAwesomeIcon icon={faCircleExclamation} />
+				</span>{" "}
+				{errorMessage}
+			</h2>
+		);
+	}
+
 	if (stops === null) {
 		return (
 			<div id={styles.loadingWrap}>
@@ -86,31 +99,26 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 		return [{ ...stop, routes: filteredRoutes }];
 	});
 
-	const body =
-		errorMessage !== null ? (
-			<h2>{errorMessage}</h2>
-		) : filteredStops.length === 0 ? (
-			<h2>No nearby stops match your filter criteria.</h2>
-		) : (
-			<div id={styles.stopsWrap}>
-				{filteredStops.map((s) => (
-					<StopRow
-						stopService={s}
-						key={s.stop.id}
-						isRouteSelected={isRouteSelected}
-						selectRoute={selectRoute}
-						unselectRoute={unselectRoute}
-					/>
-				))}
-			</div>
-		);
-
 	return (
 		<>
 			<div id={styles.controlsWrap}>
 				<FiltersPanel filters={filters} toggleFilter={toggleFilter} />
 			</div>
-			{body}
+			{filteredStops.length === 0 ? (
+				<h2>No nearby stops match your filter criteria.</h2>
+			) : (
+				<div id={styles.stopsWrap}>
+					{filteredStops.map((s) => (
+						<StopRow
+							stopService={s}
+							key={s.stop.id}
+							isRouteSelected={isRouteSelected}
+							selectRoute={selectRoute}
+							unselectRoute={unselectRoute}
+						/>
+					))}
+				</div>
+			)}
 		</>
 	);
 };
