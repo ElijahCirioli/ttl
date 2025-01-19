@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
-import DataViewer from "@/components/DataViewer";
+import CardViewer from "@/components/CardViewer/CardViewer";
+import Header from "@/components/Header";
 import ProfileManager from "./lib/ProfileManager";
+import styles from "./page.module.css";
 
 export default async function Home() {
 	console.log("pulling profile");
@@ -9,6 +11,13 @@ export default async function Home() {
 	if (!profile) {
 		return redirect("/login");
 	}
-	console.log("Got profile from database: ", profile?.id);
-	return <DataViewer profile={profile} />;
+	console.log("Got profile from database:", profile?.id);
+	return (
+		<>
+			<Header showEditButton={true} />
+			<main id={styles.main}>
+				<CardViewer profile={profile} />
+			</main>
+		</>
+	);
 }

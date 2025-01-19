@@ -2,6 +2,8 @@ import next from "next";
 import { createServer } from "node:http";
 import { Server, Socket } from "socket.io";
 import SQLite from "@/lib/db/SQLite";
+import Profile from "@/lib/models/Profile";
+import TriMet from "@/lib/transit/TriMet";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -18,12 +20,34 @@ const db = SQLite.default();
 await db.init();
 await db.createTables();
 
-io.on("connection", (socket: Socket) => {
-	const profile = socket.handshake.headers.profile as string | undefined;
-	console.log(`Connection established with profile='${profile}'`);
-	if (profile) {
-		socket.join(profile);
+const transitService = TriMet.default();
+const pollingInterval = 10000;
+
+const activeProfiles = new Map<string, Profile>();
+
+io.on("connection", async (socket: Socket) => {
+	const profileId = socket.handshake.headers.profile as string | undefined;
+	console.log(`Connection established with profileId='${profileId}'`);
+	if (!profileId) {
+		return;
 	}
+	socket.join(profileId);
+
+	socket.on("disconnect", () => {
+		console.log(`Connection lost with profileId='${profileId}'`);
+		// No longer track transit updates for this room if no one is in it
+		if (!io.sockets.adapter.rooms.get(profileId)) {
+			console.log(`No connections remaining with profileId='${profileId}'`);
+			activeProfiles.delete(profileId);
+		}
+	});
+
+	const profile = await db.getProfile(profileId);
+	if (!profile) {
+		console.error(`[ERROR] Profile not found in database with profileId='${profileId}'`);
+		return;
+	}
+	activeProfiles.set(profileId, profile);
 });
 
 httpServer
@@ -33,4 +57,22 @@ httpServer
 	})
 	.listen(port, () => {
 		console.log(`Server running on http://${hostname}:${port}`);
+		setInterval(fetchTransitData, pollingInterval);
 	});
+
+async function fetchTransitData() {
+	if (activeProfiles.size === 0) {
+		return;
+	}
+
+	for (const [profileId, profile] of activeProfiles) {
+		transitService
+			.getArrivals(profile.cards.map((card) => card.stop))
+			.then((arrivals) => {
+				io.to(profileId).emit("arrivals", Array.from(arrivals));
+			})
+			.catch((error) => {
+				console.error(`[ERROR] Error fetching arrivals for profileId='${profileId}': ${error}`);
+			});
+	}
+}

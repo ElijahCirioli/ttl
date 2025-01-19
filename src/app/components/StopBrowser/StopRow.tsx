@@ -1,6 +1,6 @@
 "use client";
 
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { Route } from "@/lib/models/Route";
@@ -41,7 +41,10 @@ const StopRow: React.FC<StopRowProps> = ({
 	return (
 		<article className={styles.stopService}>
 			<h3 className={styles.stopTitle} onClick={() => setCollapsed(!collapsed)}>
-				<FontAwesomeIcon icon={collapsed ? faChevronDown : faChevronUp} className={styles.collapseIcon} />
+				<FontAwesomeIcon
+					icon={faChevronUp}
+					className={`${styles.collapseIcon} ${collapsed ? styles.rotated : ""}`}
+				/>
 				{stopService.stop.location}
 				<span className={styles.stopTitleLocation}>{stopLocationStr}</span>
 			</h3>

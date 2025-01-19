@@ -8,9 +8,9 @@ import { getStops } from "@/actions/getStops";
 import Profile from "@/lib/models/Profile";
 import { Route, RouteType } from "@/lib/models/Route";
 import StopService from "@/lib/models/StopService";
+import StopRow from "@/components/StopBrowser/StopRow";
 import SpinnerIcon from "@/components/icons/SpinnerIcon";
 import FiltersPanel from "./FiltersPanel";
-import StopRow from "./StopRow";
 import styles from "./StopBrowser.module.css";
 
 interface StopBrowserProps {
@@ -42,7 +42,7 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 						}
 					})
 					.catch((err) => {
-						const errMessage = "Failed to get nearby stops from Trimet.";
+						const errMessage = "Failed to get nearby stops from TriMet.";
 						console.error(errMessage, err);
 						setErrorMessage(errMessage);
 					});
@@ -69,7 +69,7 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 	if (stops === null) {
 		return (
 			<div id={styles.loadingWrap}>
-				<h2>Querying Trimet...</h2>
+				<h2>Querying TriMet...</h2>
 				<SpinnerIcon scale={0.5} color={"var(--blue-color)"} />
 			</div>
 		);

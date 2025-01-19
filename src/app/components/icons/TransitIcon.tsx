@@ -22,6 +22,7 @@ const TransitIcon: React.FC<TransitIconProps> = ({ routeType, color, width }: Tr
 			style={{
 				color,
 				width: `${width}px`,
+				minWidth: `${width}px`,
 			}}
 			className={style.transitIcon}
 		>

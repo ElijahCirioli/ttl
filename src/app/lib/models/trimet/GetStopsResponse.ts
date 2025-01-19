@@ -1,14 +1,22 @@
 interface GetStopsResponse {
-	resultSet: ResultSet;
+	resultSet: SuccessResultSet | FailureResultSet;
 }
 
-interface ResultSet {
+interface SuccessResultSet {
 	queryTime: string;
 	location: Location[];
 }
 
+interface FailureResultSet {
+	errorMessage: ErrorMessage;
+}
+
+interface ErrorMessage {
+	content: string;
+}
+
 interface Location {
-	locid: string;
+	locid: number;
 	lat: number;
 	lng: number;
 	metersDistance: number;

@@ -1,5 +1,5 @@
 import { RouteType } from "@/lib/models/Route";
-import Filter from "@/components/Filter";
+import Filter from "@/components/StopBrowser/Filter";
 import styles from "./FiltersPanel.module.css";
 
 interface FiltersPanelProps {

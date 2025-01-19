@@ -1,9 +1,9 @@
 "use server";
 
 import StopService from "@/lib/models/StopService";
-import Trimet from "@/lib/transit/Trimet";
+import TriMet from "@/lib/transit/TriMet";
 
 export async function getStops(latitude: number, longitude: number): Promise<StopService[]> {
-	const transitService = Trimet.default();
+	const transitService = TriMet.default();
 	return transitService.getStops(latitude, longitude);
 }
