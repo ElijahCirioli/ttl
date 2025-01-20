@@ -6,7 +6,7 @@ import StopService from "@/lib/models/StopService";
 interface TransitService {
 	getStops(latitutde: number, longitude: number): Promise<StopService[]>;
 
-	getArrivals(stops: Stop[]): Promise<Map<Stop, Arrival[]>>;
+	getArrivals(stops: Stop[]): Promise<Map<string, Arrival[]>>;
 }
 
 export default TransitService;

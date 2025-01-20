@@ -3,19 +3,24 @@
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
+import { Arrival } from "@/lib/models/Arrival";
 import Card from "@/lib/models/Card";
+import DisplayCardRoute from "@/components/CardViewer/DisplayCardRoute";
 import TransitIcon from "@/components/icons/TransitIcon";
 import styles from "./DisplayCard.module.css";
 
 interface DisplayCardProps {
 	card: Card;
+	arrivals: Arrival[];
 }
 
-const DisplayCard: React.FC<DisplayCardProps> = ({ card }: DisplayCardProps) => {
+const DisplayCard: React.FC<DisplayCardProps> = ({ card, arrivals }: DisplayCardProps) => {
 	const [collapsed, setCollapsed] = useState(false);
 
 	// TODO: allow cards with multiple route types
 	const baseRoute = card.routes[0];
+
+	const arrivalsByRoute = Object.groupBy(arrivals, (arrival) => arrival.routeId);
 
 	return (
 		<article className={styles.displayCard}>
@@ -28,9 +33,19 @@ const DisplayCard: React.FC<DisplayCardProps> = ({ card }: DisplayCardProps) => 
 				<FontAwesomeIcon
 					icon={faChevronUp}
 					className={`${styles.collapseIcon} ${collapsed ? styles.rotated : ""}`}
+					onClick={() => setCollapsed(!collapsed)}
 				/>
 			</div>
-			<div className={styles.contentWrap}></div>
+			<div className={styles.contentWrap}>
+				{card.routes.map((route) => (
+					<DisplayCardRoute
+						route={route}
+						arrivals={arrivalsByRoute[route.id]?.toSorted((a, b) => a.time - b.time) ?? []}
+						collapsed={collapsed}
+						key={`${route.id}`}
+					/>
+				))}
+			</div>
 		</article>
 	);
 };

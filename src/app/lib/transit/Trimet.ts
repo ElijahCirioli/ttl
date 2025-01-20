@@ -115,9 +115,8 @@ class TriMet implements TransitService {
 		return arrivalStatus;
 	}
 
-	async getArrivals(stops: Stop[]): Promise<Map<Stop, Arrival[]>> {
-		const result = new Map<Stop, Arrival[]>(stops.map((stop) => [stop, []]));
-		const stopsById = new Map<string, Stop>(stops.map((stop) => [stop.id, stop]));
+	async getArrivals(stops: Stop[]): Promise<Map<string, Arrival[]>> {
+		const result = new Map<string, Arrival[]>(stops.map((stop) => [stop.id, []]));
 
 		// We can only request arrival info for up to 128 stops at a time
 		const maxRequestableStops = 128;
@@ -137,15 +136,12 @@ class TriMet implements TransitService {
 
 			for (const arrival of res.resultSet.arrival) {
 				const stopId = `${arrival.locid}`;
-				const stop = stopsById.get(stopId);
-				if (!stop) continue;
 
-				const time = Date.parse(arrival.estimated ?? arrival.scheduled);
 				// TODO: handle detours/delays
-				result.get(stop)?.push({
+				result.get(stopId)?.push({
 					stopId,
 					routeId: `${arrival.route}`,
-					time,
+					time: arrival.estimated ?? arrival.scheduled,
 					status: this.arrivalStatusConverter(arrival.status),
 				});
 			}

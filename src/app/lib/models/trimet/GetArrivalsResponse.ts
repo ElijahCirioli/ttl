@@ -26,8 +26,8 @@ interface Arrival {
 	detoured: boolean;
 	detour?: number[];
 	dir: number;
-	scheduled: string;
-	estimated?: string;
+	scheduled: number;
+	estimated?: number;
 	feet: number;
 	shortSign: string;
 	fullSign: string;

@@ -48,6 +48,8 @@ io.on("connection", async (socket: Socket) => {
 		return;
 	}
 	activeProfiles.set(profileId, profile);
+
+	fetchTransitData(profile);
 });
 
 httpServer
@@ -57,22 +59,24 @@ httpServer
 	})
 	.listen(port, () => {
 		console.log(`Server running on http://${hostname}:${port}`);
-		setInterval(fetchTransitData, pollingInterval);
+		setInterval(fetchAllTransitData, pollingInterval);
 	});
 
-async function fetchTransitData() {
+async function fetchAllTransitData() {
 	if (activeProfiles.size === 0) {
 		return;
 	}
 
-	for (const [profileId, profile] of activeProfiles) {
-		transitService
-			.getArrivals(profile.cards.map((card) => card.stop))
-			.then((arrivals) => {
-				io.to(profileId).emit("arrivals", Array.from(arrivals));
-			})
-			.catch((error) => {
-				console.error(`[ERROR] Error fetching arrivals for profileId='${profileId}': ${error}`);
-			});
-	}
+	activeProfiles.values().forEach(fetchTransitData);
+}
+
+async function fetchTransitData(profile: Profile) {
+	transitService
+		.getArrivals(profile.cards.map((card) => card.stop))
+		.then((arrivals) => {
+			io.to(profile.id).emit("arrivals", Array.from(arrivals));
+		})
+		.catch((error) => {
+			console.error(`[ERROR] Error fetching arrivals for profileId='${profile.id}': ${error}`);
+		});
 }

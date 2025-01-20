@@ -5,7 +5,6 @@ import { io } from "socket.io-client";
 import { refreshProfile } from "@/actions/refreshCookies";
 import { Arrival } from "@/lib/models/Arrival";
 import Profile from "@/lib/models/Profile";
-import Stop from "@/lib/models/Stop";
 import DisplayCard from "@/components/CardViewer/DisplayCard";
 import SpinnerIcon from "@/components/icons/SpinnerIcon";
 import styles from "./CardViewer.module.css";
@@ -16,7 +15,7 @@ interface CardViewerProps {
 
 const CardViewer: React.FC<CardViewerProps> = ({ profile }: CardViewerProps) => {
 	const [socketConnected, setSocketConnected] = useState(false);
-	const [arrivalsByStop, setArrivalsByStop] = useState(new Map<Stop, Arrival[]>());
+	const [arrivalsByStopId, setArrivalsByStopId] = useState(new Map<string, Arrival[]>());
 	const [dataReceivedAt, setDataReceivedAt] = useState<number>();
 
 	useEffect(() => {
@@ -42,10 +41,9 @@ const CardViewer: React.FC<CardViewerProps> = ({ profile }: CardViewerProps) => 
 			setSocketConnected(false);
 		}
 
-		function onArrivals(arrivalsArr: [Stop, Arrival[]][]) {
-			const arrivals: Map<Stop, Arrival[]> = new Map(arrivalsArr);
-			console.log("Received arrival data:", Array.from(arrivals.values()));
-			setArrivalsByStop(arrivals);
+		function onArrivals(arrivalsArr: [string, Arrival[]][]) {
+			const arrivals: Map<string, Arrival[]> = new Map(arrivalsArr);
+			setArrivalsByStopId(arrivals);
 			setDataReceivedAt(Date.now());
 		}
 
@@ -71,7 +69,7 @@ const CardViewer: React.FC<CardViewerProps> = ({ profile }: CardViewerProps) => 
 
 	// Ignore cached data when it is over 5 minutes old
 	const dataIsStale = dataReceivedAt && Date.now() - dataReceivedAt > 300000;
-	if (arrivalsByStop.size === 0 || dataIsStale) {
+	if (arrivalsByStopId.size === 0 || dataIsStale) {
 		return (
 			<div id={styles.loadingWrap}>
 				<h2>Querying TriMet...</h2>
@@ -83,7 +81,7 @@ const CardViewer: React.FC<CardViewerProps> = ({ profile }: CardViewerProps) => 
 	return (
 		<div id={styles.cardsWrap}>
 			{profile.cards.map((card) => (
-				<DisplayCard card={card} key={card.stop.id} />
+				<DisplayCard card={card} arrivals={arrivalsByStopId.get(card.stop.id) ?? []} key={card.stop.id} />
 			))}
 		</div>
 	);
