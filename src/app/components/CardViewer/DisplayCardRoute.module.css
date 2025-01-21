@@ -1,0 +1,37 @@
+.routeWrap {
+	background-color: var(--gray-color);
+	padding: 0.3em 1.2em;
+	width: calc(100% - 2.4em);
+}
+
+.arrival {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 0.5em;
+	margin: 0.6em 0;
+}
+
+.arrivalTime {
+	font-weight: bold;
+	font-size: 1.1em;
+	text-align: left;
+	min-width: 3.3em;
+	width: auto;
+	margin: 0;
+	display: block;
+}
+
+.smallText {
+	font-size: 0.9em;
+}
+
+.arrivalDestination {
+	font-size: 1.1em;
+	margin: 0;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
