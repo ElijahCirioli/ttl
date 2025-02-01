@@ -67,11 +67,11 @@ async function fetchAllTransitData() {
 		return;
 	}
 
-	activeProfiles.values().forEach(fetchTransitData);
+	return Promise.all(Array.from(activeProfiles.values()).map(fetchTransitData));
 }
 
 async function fetchTransitData(profile: Profile) {
-	transitService
+	return transitService
 		.getArrivals(profile.cards.map((card) => card.stop))
 		.then((arrivals) => {
 			io.to(profile.id).emit("arrivals", Array.from(arrivals));
