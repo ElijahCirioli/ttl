@@ -1,6 +1,6 @@
 .routeWrap {
 	background-color: var(--gray-color);
-	padding: 0.3em 1.2em;
+	padding: 0.25em 1.2em;
 	width: calc(100% - 2.4em);
 }
 
@@ -18,7 +18,7 @@
 	font-weight: bold;
 	font-size: 1.1em;
 	text-align: left;
-	min-width: 3.3em;
+	min-width: 3.4em;
 	width: auto;
 	margin: 0;
 	display: block;

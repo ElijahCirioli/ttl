@@ -36,6 +36,10 @@ const DisplayCardRoute: React.FC<DisplayCardRouteProps> = ({ route, arrivals, co
 			);
 		}
 		const diffHours = Math.floor(diffMinutes / 60);
+		if (diffHours >= 12) {
+			return <p className={styles.arrivalTime}>No service</p>;
+		}
+
 		return (
 			<p className={styles.arrivalTime}>
 				{`${diffHours}`}
