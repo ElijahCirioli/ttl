@@ -7,11 +7,9 @@
 }
 
 #cardsWrap {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	justify-content: flex-start;
-	gap: 2.5em;
-	padding: 40px 60px;
+	display: grid;
+	gap: 3em;
+	grid-template-columns: repeat(auto-fit, 350px);
+	justify-content: center;
+	align-content: flex-start;
 }

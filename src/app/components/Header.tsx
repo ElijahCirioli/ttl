@@ -1,6 +1,6 @@
 "use client";
 
-import { faUser } from "@fortawesome/free-regular-svg-icons";
+import { faPenToSquare, faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ interface HeaderProps {
 	showEditButton: boolean;
 }
 
-const Header: React.FC<HeaderProps> = () => {
+const Header: React.FC<HeaderProps> = ({ showEditButton }: HeaderProps) => {
 	const [time, setTime] = useState("");
 
 	useEffect(() => {
@@ -27,9 +27,16 @@ const Header: React.FC<HeaderProps> = () => {
 				<img id={styles.logo} src="/imgs/logo.png" alt="Time To Leave" />
 			</Link>
 			<h2 id={styles.clock}>{time}</h2>
-			<button className={styles.button}>
-				<FontAwesomeIcon icon={faUser} />
-			</button>
+			<div id={styles.headerButtons}>
+				{showEditButton && (
+					<button className={styles.button}>
+						<FontAwesomeIcon icon={faPenToSquare} />
+					</button>
+				)}
+				<button className={styles.button}>
+					<FontAwesomeIcon icon={faUser} />
+				</button>
+			</div>
 		</header>
 	);
 };
