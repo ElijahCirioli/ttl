@@ -3,8 +3,8 @@
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
-import { submitStops } from "@/actions/addStops";
 import { getStops } from "@/actions/getStops";
+import { updateStops } from "@/actions/updateStops";
 import Profile from "@/lib/models/Profile";
 import { Route, RouteType } from "@/lib/models/Route";
 import StopService from "@/lib/models/StopService";
@@ -127,7 +127,7 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 			}
 			return [{ ...card, routes: routesToRemove }];
 		});
-		submitStops(profile.id, cardsToAdd, cardsToRemove);
+		updateStops(profile.id, cardsToAdd, cardsToRemove);
 	}
 
 	return (

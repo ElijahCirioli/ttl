@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { refreshProfile } from "@/actions/refreshCookies";
 import { Arrival } from "@/lib/models/Arrival";
+import Card from "@/lib/models/Card";
 import Profile from "@/lib/models/Profile";
 import DisplayCard from "@/components/CardViewer/DisplayCard";
 import SpinnerIcon from "@/components/icons/SpinnerIcon";
@@ -11,9 +12,17 @@ import styles from "./CardViewer.module.css";
 
 interface CardViewerProps {
 	profile: Profile;
+	isEditing: boolean;
+	editedCards: Card[];
+	setEditedCards(cards: Card[]): void;
 }
 
-const CardViewer: React.FC<CardViewerProps> = ({ profile }: CardViewerProps) => {
+const CardViewer: React.FC<CardViewerProps> = ({
+	profile,
+	isEditing,
+	editedCards,
+	setEditedCards,
+}: CardViewerProps) => {
 	const [socketConnected, setSocketConnected] = useState(false);
 	const [arrivalsByStopId, setArrivalsByStopId] = useState(new Map<string, Arrival[]>());
 	const [dataReceivedAt, setDataReceivedAt] = useState<number>();
@@ -42,6 +51,7 @@ const CardViewer: React.FC<CardViewerProps> = ({ profile }: CardViewerProps) => 
 		}
 
 		function onArrivals(arrivalsArr: [string, Arrival[]][]) {
+			// TODO: add check for when we get unexpected arrivals. That likely means we need to refresh the profile
 			const arrivals: Map<string, Arrival[]> = new Map(arrivalsArr);
 			setArrivalsByStopId(arrivals);
 			setDataReceivedAt(Date.now());
@@ -78,10 +88,21 @@ const CardViewer: React.FC<CardViewerProps> = ({ profile }: CardViewerProps) => 
 		);
 	}
 
+	function deleteCard(card: Card) {
+		setEditedCards(editedCards.filter((c) => c.stop.id !== card.stop.id));
+	}
+
+	const cards = isEditing ? editedCards : profile.cards;
 	return (
 		<div id={styles.cardsWrap}>
-			{profile.cards.map((card) => (
-				<DisplayCard card={card} arrivals={arrivalsByStopId.get(card.stop.id) ?? []} key={card.stop.id} />
+			{cards.map((card) => (
+				<DisplayCard
+					card={card}
+					arrivals={arrivalsByStopId.get(card.stop.id) ?? []}
+					isEditing={isEditing}
+					deleteCard={() => deleteCard(card)}
+					key={card.stop.id}
+				/>
 			))}
 		</div>
 	);

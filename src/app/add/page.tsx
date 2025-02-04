@@ -12,7 +12,7 @@ export default async function Home() {
 	}
 	return (
 		<>
-			<Header showEditButton={false} />
+			<Header />
 			<main id={styles.main}>
 				<StopBrowser profile={profile} />
 			</main>

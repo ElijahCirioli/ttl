@@ -20,6 +20,7 @@
 	text-align: left;
 	min-width: 3.4em;
 	width: auto;
+	max-width: max-content;
 	margin: 0;
 	display: block;
 }

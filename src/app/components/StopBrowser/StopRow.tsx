@@ -54,7 +54,7 @@ const StopRow: React.FC<StopRowProps> = ({
 						return {
 							name: route.destination,
 							isChecked: isRouteSelected(route),
-							toggledChecked: () => {
+							toggleChecked: () => {
 								// TODO: make this less dumb
 								if (isRouteSelected(route)) {
 									unselectRoute(route);

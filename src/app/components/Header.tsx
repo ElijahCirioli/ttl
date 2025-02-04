@@ -7,10 +7,16 @@ import { useEffect, useState } from "react";
 import styles from "./Header.module.css";
 
 interface HeaderProps {
-	showEditButton: boolean;
+	editingState?: EditingState;
 }
 
-const Header: React.FC<HeaderProps> = ({ showEditButton }: HeaderProps) => {
+interface EditingState {
+	isEditing: boolean;
+	startEditing(): void;
+	stopEditing(saveChanges: boolean): void;
+}
+
+const Header: React.FC<HeaderProps> = ({ editingState }: HeaderProps) => {
 	const [time, setTime] = useState("");
 
 	useEffect(() => {
@@ -21,6 +27,21 @@ const Header: React.FC<HeaderProps> = ({ showEditButton }: HeaderProps) => {
 		}, 100);
 	}, []);
 
+	const editButtons = editingState?.isEditing ? (
+		<>
+			<button className={styles.textButton} onClick={() => editingState.stopEditing(false)}>
+				Cancel
+			</button>
+			<button className={styles.textButton} onClick={() => editingState.stopEditing(true)}>
+				Save
+			</button>
+		</>
+	) : (
+		<button className={styles.button} onClick={() => editingState?.startEditing()}>
+			<FontAwesomeIcon icon={faPenToSquare} />
+		</button>
+	);
+
 	return (
 		<header id={styles.header}>
 			<Link id={styles.logoLink} href="/">
@@ -28,11 +49,7 @@ const Header: React.FC<HeaderProps> = ({ showEditButton }: HeaderProps) => {
 			</Link>
 			<h2 id={styles.clock}>{time}</h2>
 			<div id={styles.headerButtons}>
-				{showEditButton && (
-					<button className={styles.button}>
-						<FontAwesomeIcon icon={faPenToSquare} />
-					</button>
-				)}
+				{editingState && editButtons}
 				<button className={styles.button}>
 					<FontAwesomeIcon icon={faUser} />
 				</button>

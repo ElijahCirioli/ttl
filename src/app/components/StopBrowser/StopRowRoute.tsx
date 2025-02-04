@@ -14,7 +14,7 @@ interface StopRowRouteProps {
 interface SelectableDestination {
 	name: string;
 	isChecked: boolean;
-	toggledChecked(): void;
+	toggleChecked(): void;
 }
 
 const StopRowRoute: React.FC<StopRowRouteProps> = ({ route, destinations }: StopRowRouteProps) => {
@@ -29,7 +29,7 @@ const StopRowRoute: React.FC<StopRowRouteProps> = ({ route, destinations }: Stop
 					<label className={styles.destination} key={dest.name}>
 						<button
 							className={`${styles.checkBox} ${dest.isChecked ? styles.checked : ""}`}
-							onClick={dest.toggledChecked}
+							onClick={dest.toggleChecked}
 						>
 							<span className={styles.checkMark}>
 								<FontAwesomeIcon icon={faCheck} />
