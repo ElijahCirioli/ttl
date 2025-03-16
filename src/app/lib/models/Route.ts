@@ -7,10 +7,14 @@ export enum RouteType {
 	AerialTram = "Aerial Tram",
 }
 
-export interface Route {
-	id: string;
+export type RouteId = string;
+
+interface Route {
+	id: RouteId;
 	type: RouteType;
 	name: string;
 	destination: string;
 	color?: string;
 }
+
+export default Route;

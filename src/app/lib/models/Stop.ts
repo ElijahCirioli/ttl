@@ -5,8 +5,10 @@ export enum StopDirection {
 	Westbound = "Westbound",
 }
 
+export type StopId = string;
+
 interface Stop {
-	id: string;
+	id: StopId;
 	location: string;
 	direction?: StopDirection;
 }

@@ -93,6 +93,7 @@ const CardViewer: React.FC<CardViewerProps> = ({
 	}
 
 	const cards = isEditing ? editedCards : profile.cards;
+	console.log(cards);
 	return (
 		<div id={styles.cardsWrap}>
 			{cards.map((card) => (

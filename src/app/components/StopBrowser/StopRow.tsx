@@ -3,16 +3,17 @@
 import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { Route } from "@/lib/models/Route";
+import Route, { RouteId } from "@/lib/models/Route";
+import { StopId } from "@/lib/models/Stop";
 import StopService from "@/lib/models/StopService";
 import StopRowRoute from "./StopRowRoute";
 import styles from "./StopRow.module.css";
 
 interface StopRowProps {
 	stopService: StopService;
-	isRouteSelected(route: Route): boolean;
-	selectRoute(route: Route): void;
-	unselectRoute(route: Route): void;
+	isRouteSelected(stopId: StopId, routeId: RouteId): boolean;
+	selectRoute(stopId: StopId, routeId: RouteId): void;
+	unselectRoute(stopId: StopId, routeId: RouteId): void;
 }
 
 const StopRow: React.FC<StopRowProps> = ({
@@ -53,13 +54,12 @@ const StopRow: React.FC<StopRowProps> = ({
 					const destinations = routes.map((route) => {
 						return {
 							name: route.destination,
-							isChecked: isRouteSelected(route),
+							isChecked: isRouteSelected(stopService.stop.id, route.id),
 							toggleChecked: () => {
-								// TODO: make this less dumb
-								if (isRouteSelected(route)) {
-									unselectRoute(route);
+								if (isRouteSelected(stopService.stop.id, route.id)) {
+									unselectRoute(stopService.stop.id, route.id);
 								} else {
-									selectRoute(route);
+									selectRoute(stopService.stop.id, route.id);
 								}
 							},
 						};
