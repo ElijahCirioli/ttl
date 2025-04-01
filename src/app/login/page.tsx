@@ -1,15 +1,21 @@
-import { submitLoginForm } from "@/actions/login";
 import ProfileManager from "@/lib/ProfileManager";
+import Header from "@/components/Header";
+import LoginForm from "@/components/Login/LoginForm";
+import styles from "./page.module.css";
 
 export default async function Home() {
 	const profileManager = await ProfileManager.default();
 	const profile = await profileManager.getProfileFromCookies();
 
 	return (
-		<form action={submitLoginForm}>
-			<label htmlFor="profileInput">Profile name:</label>
-			<input id="profileInput" name="profileInput" type="text" defaultValue={profile?.id ?? ""} />
-			<button type="submit">Submit</button>
-		</form>
+		<>
+			<Header />
+			<main id={styles.main}>
+				<div id={styles.loginCard}>
+					<h2>Login or create profile</h2>
+					<LoginForm existingProfileId={profile?.id} />
+				</div>
+			</main>
+		</>
 	);
 }

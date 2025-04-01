@@ -1,4 +1,4 @@
-import { Route } from "./Route";
+import Route from "./Route";
 import Stop from "./Stop";
 
 interface StopService {

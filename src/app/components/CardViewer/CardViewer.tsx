@@ -93,7 +93,6 @@ const CardViewer: React.FC<CardViewerProps> = ({
 	}
 
 	const cards = isEditing ? editedCards : profile.cards;
-	console.log(cards);
 	return (
 		<div id={styles.cardsWrap}>
 			{cards.map((card) => (
@@ -102,7 +101,7 @@ const CardViewer: React.FC<CardViewerProps> = ({
 					arrivals={arrivalsByStopId.get(card.stop.id) ?? []}
 					isEditing={isEditing}
 					deleteCard={() => deleteCard(card)}
-					key={card.stop.id}
+					key={card.stop.id + card.routes.map((route) => route.id + route.destination).join("|")}
 				/>
 			))}
 		</div>

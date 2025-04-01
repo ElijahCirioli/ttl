@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { Arrival, ArrivalStatus } from "@/lib/models/Arrival";
-import { Route, RouteType } from "@/lib/models/Route";
+import Route, { RouteType } from "@/lib/models/Route";
 import Stop, { StopDirection } from "@/lib/models/Stop";
 import StopService from "@/lib/models/StopService";
 import GetArrivalsResponse from "@/lib/models/TriMet/GetArrivalsResponse";

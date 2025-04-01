@@ -2,7 +2,7 @@
 
 import { ReactElement, useEffect, useState } from "react";
 import { Arrival } from "@/lib/models/Arrival";
-import { Route } from "@/lib/models/Route";
+import Route from "@/lib/models/Route";
 import styles from "./DisplayCardRoute.module.css";
 
 interface DisplayCardRouteProps {
