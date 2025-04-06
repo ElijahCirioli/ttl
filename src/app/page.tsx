@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
+import ProfileManager from "@/lib/ProfileManager";
 import HomePage from "@/components/HomePage";
-import ProfileManager from "./lib/ProfileManager";
 
 export default async function Home() {
 	const profileManager = await ProfileManager.default();
