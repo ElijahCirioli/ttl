@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { refreshProfile } from "@/actions/refreshCookies";
@@ -81,6 +82,16 @@ const CardViewer: React.FC<CardViewerProps> = ({
 			<div id={styles.loadingWrap}>
 				<h2>Establishing connection with server...</h2>
 				<SpinnerIcon scale={0.5} color={"var(--blue-color)"} />
+			</div>
+		);
+	}
+
+	if (profile.cards.length === 0) {
+		// TODO: make this a nice experience
+		return (
+			<div id={styles.errorWrap}>
+				<h2>No cards found for profile.</h2>
+				<Link href="/add">Add transit stops</Link>
 			</div>
 		);
 	}
