@@ -24,6 +24,7 @@ const CardViewer: React.FC<CardViewerProps> = ({
 	setEditedCards,
 }: CardViewerProps) => {
 	const [socketConnected, setSocketConnected] = useState(false);
+	const [errorMessage, setErrorMessage] = useState<string | undefined>();
 	const [arrivalsByStopId, setArrivalsByStopId] = useState(new Map<string, Arrival[]>());
 	const [dataReceivedAt, setDataReceivedAt] = useState<number>();
 
@@ -55,16 +56,23 @@ const CardViewer: React.FC<CardViewerProps> = ({
 			const arrivals: Map<string, Arrival[]> = new Map(arrivalsArr);
 			setArrivalsByStopId(arrivals);
 			setDataReceivedAt(Date.now());
+			setErrorMessage(undefined);
+		}
+
+		function onError(error: string) {
+			setErrorMessage(error);
 		}
 
 		socket.on("connect", onConnect);
 		socket.on("disconnect", onDisconnect);
 		socket.on("arrivals", onArrivals);
+		socket.on("error", onError);
 
 		return () => {
 			socket.off("connect", onConnect);
 			socket.off("disconnect", onDisconnect);
 			socket.off("arrivals", onArrivals);
+			socket.off("error", onError);
 		};
 	}, [profile.id]);
 
@@ -73,6 +81,15 @@ const CardViewer: React.FC<CardViewerProps> = ({
 			<div id={styles.loadingWrap}>
 				<h2>Establishing connection with server...</h2>
 				<SpinnerIcon scale={0.5} color={"var(--blue-color)"} />
+			</div>
+		);
+	}
+
+	if (errorMessage) {
+		return (
+			<div id={styles.errorWrap}>
+				<h2>Error from server</h2>
+				<p>{errorMessage}</p>
 			</div>
 		);
 	}

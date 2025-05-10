@@ -23,7 +23,9 @@ class TriMet implements TransitService {
 			url += `&${key}=${val}`;
 		}
 		const response = await fetch(url);
-		const json = await response.json();
+		// Read the response as text first because the API doesn't return errors as JSON
+		const text = await response.text();
+		const json = await Promise.try(() => JSON.parse(text)).catch(() => Promise.reject(text));
 		return json as T;
 	}
 

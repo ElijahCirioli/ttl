@@ -52,8 +52,8 @@ const DisplayCardRoute: React.FC<DisplayCardRouteProps> = ({ route, arrivals, co
 
 	return (
 		<div className={styles.routeWrap}>
-			{relevantArrivals.map((arrival) => (
-				<div className={styles.arrival} key={arrival.time}>
+			{relevantArrivals.map((arrival, i) => (
+				<div className={styles.arrival} key={i}>
 					{arrivalTime(arrival.time)}
 					<p className={styles.arrivalDestination}>{route.destination}</p>
 				</div>

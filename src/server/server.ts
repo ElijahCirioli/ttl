@@ -78,5 +78,6 @@ async function fetchTransitData(profile: Profile) {
 		})
 		.catch((error) => {
 			console.error(`[ERROR] Error fetching arrivals for profileId='${profile.id}': ${error}`);
+			io.to(profile.id).emit("error", `${error}`);
 		});
 }

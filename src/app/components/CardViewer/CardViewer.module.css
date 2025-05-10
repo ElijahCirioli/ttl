@@ -6,6 +6,14 @@
 	gap: 0.5em;
 }
 
+#errorWrap {
+	display: block;
+}
+
+#errorWrap > h2 {
+	margin-bottom: 0.5em;
+}
+
 #cardsWrap {
 	display: grid;
 	gap: 3em;
