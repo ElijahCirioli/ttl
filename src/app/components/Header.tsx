@@ -2,6 +2,7 @@
 
 import { faPenToSquare, faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./Header.module.css";
@@ -45,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({ editingState }: HeaderProps) => {
 	return (
 		<header id={styles.header}>
 			<Link id={styles.logoLink} href="/">
-				<img id={styles.logo} src="/imgs/logo.png" alt="Time To Leave" />
+				<Image width={749} height={250} id={styles.logo} src="/imgs/logo.png" alt="Time To Leave" />
 			</Link>
 			<h2 id={styles.clock}>{time}</h2>
 			<div id={styles.headerButtons}>

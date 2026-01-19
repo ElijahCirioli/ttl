@@ -13,7 +13,7 @@ interface Route {
 	id: RouteId;
 	type: RouteType;
 	name: string;
-	destination: string;
+	destinations: string[];
 	color?: string;
 }
 

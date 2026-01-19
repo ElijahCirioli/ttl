@@ -8,22 +8,22 @@ import { defaultProfile } from "@/lib/models/Profile";
 
 export async function submitLoginForm(data: FormData) {
 	const profileId = data.get("profileInput")?.valueOf().toString();
-	if (profileId) {
-		const profileManager = await ProfileManager.default();
-		const cookieStore = await cookies();
+	if (!profileId) return;
 
-		cookieStore.set(PROFILE_COOKIE_NAME, profileId, { sameSite: "strict", maxAge: 34560000 });
+	const profileManager = await ProfileManager.default();
+	const cookieStore = await cookies();
 
-		let profile = await profileManager.getProfileFromCookies();
-		if (!profile) {
-			profile = defaultProfile(profileId);
-			await profileManager.createProfile(profile);
-		}
+	cookieStore.set(PROFILE_COOKIE_NAME, profileId, { sameSite: "strict", maxAge: 34560000 });
 
-		if (profile.cards.length === 0) {
-			redirect("/add");
-		} else {
-			redirect("/");
-		}
+	let profile = await profileManager.getProfileFromCookies();
+	if (!profile) {
+		profile = defaultProfile(profileId);
+		await profileManager.createProfile(profile);
+	}
+
+	if (profile.cards.length === 0) {
+		redirect("/add");
+	} else {
+		redirect("/");
 	}
 }

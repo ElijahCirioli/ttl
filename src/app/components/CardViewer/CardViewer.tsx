@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { refreshProfile } from "@/actions/refreshCookies";
-import { Arrival } from "@/lib/models/Arrival";
+import Arrival from "@/lib/models/Arrival";
 import Card from "@/lib/models/Card";
 import Profile from "@/lib/models/Profile";
 import DisplayCard from "@/components/CardViewer/DisplayCard";
@@ -28,6 +28,7 @@ const CardViewer: React.FC<CardViewerProps> = ({
 	const [errorMessage, setErrorMessage] = useState<string | undefined>();
 	const [arrivalsByStopId, setArrivalsByStopId] = useState(new Map<string, Arrival[]>());
 	const [dataReceivedAt, setDataReceivedAt] = useState<number>();
+	const [currentTime, setCurrentTime] = useState<number>(0);
 
 	useEffect(() => {
 		refreshProfile(profile.id);
@@ -77,6 +78,14 @@ const CardViewer: React.FC<CardViewerProps> = ({
 		};
 	}, [profile.id]);
 
+	useEffect(() => {
+		// Update the current time every second so that we can update the arrival times without actually receiving fresh data
+		const interval = setInterval(() => setCurrentTime(Date.now()), 1000);
+		return () => {
+			clearInterval(interval);
+		};
+	});
+
 	if (!socketConnected) {
 		return (
 			<div id={styles.loadingWrap}>
@@ -106,7 +115,7 @@ const CardViewer: React.FC<CardViewerProps> = ({
 	}
 
 	// Ignore cached data when it is over 5 minutes old
-	const dataIsStale = dataReceivedAt && Date.now() - dataReceivedAt > 300000;
+	const dataIsStale = dataReceivedAt && currentTime - dataReceivedAt > 300000;
 	if (arrivalsByStopId.size === 0 || dataIsStale) {
 		return (
 			<div id={styles.loadingWrap}>
@@ -116,8 +125,12 @@ const CardViewer: React.FC<CardViewerProps> = ({
 		);
 	}
 
-	function deleteCard(card: Card) {
-		setEditedCards(editedCards.filter((c) => c.stop.id !== card.stop.id));
+	function deleteCard(card: Card): void {
+		setEditedCards(editedCards.filter((c) => c.stop.id !== card.stop.id || c.route.id !== card.route.id));
+	}
+
+	function getArrivalsForCard(card: Card) {
+		return arrivalsByStopId.get(card.stop.id)?.filter((c) => c.routeId === card.route.id) ?? [];
 	}
 
 	const cards = isEditing ? editedCards : profile.cards;
@@ -126,10 +139,11 @@ const CardViewer: React.FC<CardViewerProps> = ({
 			{cards.map((card) => (
 				<DisplayCard
 					card={card}
-					arrivals={arrivalsByStopId.get(card.stop.id) ?? []}
+					arrivals={arrivalsByStopId.get(card.stop.id)?.filter((c) => c.routeId === card.route.id) ?? []}
+					currentTime={currentTime}
 					isEditing={isEditing}
 					deleteCard={() => deleteCard(card)}
-					key={card.stop.id + card.routes.map((route) => route.id + route.destination).join("|")}
+					key={[card.stop.id, card.route.id, ...card.route.destinations].join("|")}
 				/>
 			))}
 		</div>

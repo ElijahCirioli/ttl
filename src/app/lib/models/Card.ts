@@ -3,7 +3,8 @@ import Stop from "./Stop";
 
 interface Card {
 	stop: Stop;
-	routes: Route[];
+	route: Route;
+	disambiguationRequired: boolean;
 }
 
 export default Card;

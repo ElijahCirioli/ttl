@@ -1,31 +1,21 @@
 .route {
 	padding-left: 1.5em;
-}
-
-.routeTitle {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: nowrap;
 	justify-content: flex-start;
 	align-items: center;
 	gap: 0.6em;
-	margin-top: 0.8em;
+	margin: 0.7em 0;
 }
 
-.routeTitle h4 {
+.route h4 {
 	font-size: 1.25em;
 	margin: 0;
 }
 
-.destination {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: nowrap;
-	justify-content: flex-start;
-	align-items: center;
-	gap: 0.6em;
-	margin-top: 0.6em;
-	padding-left: 0.48em;
+.route p {
+	margin: 0;
 }
 
 .checkBox {

@@ -27,17 +27,8 @@ const StopRow: React.FC<StopRowProps> = ({
 	// TODO: support metric output
 	const distanceMiles = (stopService.distanceMeters / 1609).toFixed(1);
 	const stopLocationStr = stopService.stop.direction
-		? `(${stopService.stop.direction}, ${distanceMiles} miles)`
+		? `(${stopService.stop.direction}, ${distanceMiles} miles away)`
 		: `(${distanceMiles} miles)`;
-
-	const routesById = new Map<string, Route[]>();
-	for (const route of stopService.routes) {
-		if (!routesById.has(route.id)) {
-			routesById.set(route.id, [route]);
-		} else {
-			routesById.get(route.id)?.push(route);
-		}
-	}
 
 	return (
 		<article className={styles.stopService}>
@@ -50,22 +41,20 @@ const StopRow: React.FC<StopRowProps> = ({
 				<span className={styles.stopTitleLocation}>{stopLocationStr}</span>
 			</h3>
 			<div className={`${styles.routesWrap} ${collapsed ? styles.hidden : ""}`}>
-				{Array.from(routesById.entries()).map(([routeId, routes]) => {
-					const destinations = routes.map((route) => {
-						return {
-							name: route.destination,
-							isChecked: isRouteSelected(stopService.stop.id, route.id),
-							toggleChecked: () => {
-								if (isRouteSelected(stopService.stop.id, route.id)) {
-									unselectRoute(stopService.stop.id, route.id);
-								} else {
-									selectRoute(stopService.stop.id, route.id);
-								}
-							},
-						};
-					});
-					return <StopRowRoute key={routeId} route={routes[0]} destinations={destinations} />;
-				})}
+				{stopService.routes.map((route) => (
+					<StopRowRoute
+						key={route.id}
+						route={route}
+						isChecked={isRouteSelected(stopService.stop.id, route.id)}
+						toggleChecked={() => {
+							if (isRouteSelected(stopService.stop.id, route.id)) {
+								unselectRoute(stopService.stop.id, route.id);
+							} else {
+								selectRoute(stopService.stop.id, route.id);
+							}
+						}}
+					/>
+				))}
 			</div>
 		</article>
 	);

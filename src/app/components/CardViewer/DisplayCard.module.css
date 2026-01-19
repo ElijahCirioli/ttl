@@ -54,13 +54,14 @@
 }
 
 .contentWrap {
-	background-color: var(--slightly-dark-gray-color);
+	background-color: var(--gray-color);
 	display: flex;
 	flex-direction: column;
 	flex-wrap: nowrap;
 	justify-content: flex-start;
 	align-items: flex-start;
-	gap: 2px;
+	padding: 0.35em 1.2em;
+	width: calc(100% - 2.4em);
 }
 
 .editing {

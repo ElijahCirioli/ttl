@@ -5,10 +5,13 @@ export enum ArrivalStatus {
 	Cancelled = "Cancelled",
 }
 
-export interface Arrival {
+interface Arrival {
 	stopId: string;
 	routeId: string;
+	destination: string;
 	time: number;
 	status: ArrivalStatus;
 	alert?: string;
 }
+
+export default Arrival;

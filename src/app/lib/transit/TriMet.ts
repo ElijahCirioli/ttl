@@ -1,5 +1,5 @@
 import assert from "node:assert";
-import { Arrival, ArrivalStatus } from "@/lib/models/Arrival";
+import Arrival, { ArrivalStatus } from "@/lib/models/Arrival";
 import Route, { RouteType } from "@/lib/models/Route";
 import Stop, { StopDirection } from "@/lib/models/Stop";
 import StopService from "@/lib/models/StopService";
@@ -63,9 +63,14 @@ class TriMet implements TransitService {
 		return mappings.get(subtype) ?? desc;
 	}
 
+	private routeColorConverter(color: string): string {
+		// The default blue color for busses returned by Trimet has changed to be undersaturated.
+		return color === "4679AA" ? "#084c8d" : `#${color}`;
+	}
+
 	async getStops(latitutde: number, longitude: number): Promise<StopService[]> {
 		const res = await this.makeRequest<GetStopsResponse>(
-			"V1/stops",
+			"V2/stops",
 			new Map([
 				["json", "true"],
 				["ll", `${latitutde},${longitude}`],
@@ -84,17 +89,13 @@ class TriMet implements TransitService {
 				location: location.desc,
 				direction: this.routeDirectionConverter(location.dir),
 			};
-			const routes: Route[] = location.route.flatMap((route) =>
-				route.dir.map((dir) => {
-					return {
-						id: `${route.route}`,
-						type: this.routeSubTypeConverter(route.routeSubType),
-						name: this.routeName(route.routeSubType, route.route, route.desc),
-						destination: dir.desc,
-						color: `#${route.routeColor}`,
-					};
-				})
-			);
+			const routes: Route[] = location.route.map((route) => ({
+				id: `${route.route}`,
+				type: this.routeSubTypeConverter(route.routeSubType),
+				name: this.routeName(route.routeSubType, route.route, route.desc),
+				destinations: route.dir.map((dir) => dir.desc),
+				color: this.routeColorConverter(route.routeColor),
+			}));
 			return {
 				stop,
 				routes,
@@ -129,7 +130,7 @@ class TriMet implements TransitService {
 				new Map([
 					["locIDs", locIds.join(",")],
 					["arrivals", "3"],
-					["minutes", `60`],
+					["minutes", "60"],
 				])
 			);
 			if ("errorMessage" in res.resultSet) {
@@ -139,10 +140,18 @@ class TriMet implements TransitService {
 			for (const arrival of res.resultSet.arrival) {
 				const stopId = `${arrival.locid}`;
 
+				// This is hacky, but TriMet doesn't provide this data in a nice way
+				const destinationComponents = arrival.fullSign.split(/ [Tt]o /);
+				let destination = arrival.fullSign;
+				if (destinationComponents.length > 1) {
+					destination = `To ${destinationComponents[1].trim()}`;
+				}
+
 				// TODO: handle detours/delays
 				result.get(stopId)?.push({
 					stopId,
 					routeId: `${arrival.route}`,
+					destination: destination,
 					time: arrival.estimated ?? arrival.scheduled,
 					status: this.arrivalStatusConverter(arrival.status),
 				});

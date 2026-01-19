@@ -2,8 +2,9 @@
 
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
-import { addAndRemoveRoutes } from "@/actions/addAndRemoveRoutes";
+import { redirect } from "next/navigation";
+import { ReactElement, useEffect, useState } from "react";
+import { addAndRemoveCards } from "@/actions/addAndRemoveCards";
 import { getStops } from "@/actions/getStops";
 import Profile from "@/lib/models/Profile";
 import Route, { RouteId, RouteType } from "@/lib/models/Route";
@@ -21,14 +22,13 @@ interface StopBrowserProps {
 const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) => {
 	const [stops, setStops] = useState<StopService[] | null>(null);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
+	const [coordinatesMessage, setCoordinatesMessage] = useState<string | null>(null);
 	const [filters, setFilters] = useState<Map<RouteType, boolean>>(new Map());
 
 	// Save the combinations of routes and stops that we are modifying as a tuple [stopId, routeId]
 	const [routesToAddById, setRoutesToAddById] = useState<Map<StopId, Set<RouteId>>>(new Map());
 	const [routesToRemoveById, setRoutesToRemoveById] = useState<Map<StopId, Set<RouteId>>>(new Map());
-	const savedSelectedRoutesById = new Map(
-		profile.cards.map((card) => [card.stop.id, new Set(card.routes.map((route) => route.id))])
-	);
+	const savedSelectedRoutesById = new Map(profile.cards.map((card) => [card.stop.id, new Set(card.route.id)]));
 
 	useEffect(() => {
 		navigator.geolocation.getCurrentPosition(
@@ -41,7 +41,11 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 							);
 							setFilters(new Map(routeTypes.map((routeType) => [routeType, true])));
 							setStops(localStops);
+							setCoordinatesMessage(`${localStops.length} TriMet stops found near (${pos.coords.latitude} lat,
+									${pos.coords.longitude} long)`);
+							setErrorMessage(null);
 						} else {
+							setCoordinatesMessage(null);
 							setErrorMessage("No stops found near your current location.");
 						}
 					})
@@ -49,13 +53,15 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 						const errMessage = "Failed to get nearby stops from TriMet.";
 						console.error(errMessage, err);
 						setErrorMessage(errMessage);
+						setCoordinatesMessage(null);
 					});
 			},
 			(err) => {
 				const errMessage = "Failed to get current location. Allow TTL to access your location and try again.";
 				console.error(errMessage, err);
 				setErrorMessage(errMessage);
-			}
+			},
+			{ enableHighAccuracy: true }
 		);
 	}, []);
 
@@ -147,17 +153,23 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 			)
 			.filter((route) => route !== undefined);
 
-		addAndRemoveRoutes(profile.id, routesToAdd, routesToRemove);
+		addAndRemoveCards(profile.id, routesToAdd, routesToRemove);
 	}
 
 	return (
 		<>
 			<div id={styles.controlsWrap}>
 				<FiltersPanel filters={filters} toggleFilter={toggleFilter} />
-				<button id={styles.submitButton} onClick={submit}>
-					Save selections
-				</button>
+				<div id={styles.submitButtonsWrap}>
+					<button id={styles.cancelButton} onClick={() => redirect("/")}>
+						Cancel
+					</button>
+					<button id={styles.submitButton} onClick={submit}>
+						Save selections
+					</button>
+				</div>
 			</div>
+			{coordinatesMessage ? <p id={styles.coordinates}>{coordinatesMessage}</p> : {}}
 			{filteredStops.length === 0 ? (
 				<h2>No nearby stops match your filter criteria.</h2>
 			) : (

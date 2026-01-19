@@ -1,4 +1,4 @@
-import { Arrival } from "@/lib/models/Arrival";
+import Arrival from "@/lib/models/Arrival";
 import Stop from "@/lib/models/Stop";
 import StopService from "@/lib/models/StopService";
 
