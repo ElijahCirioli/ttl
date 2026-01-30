@@ -1,3 +1,4 @@
+import ScrollingText from "../ScrollingText";
 import styles from "./DisplayCardArrival.module.css";
 
 interface DisplayCardArrivalProps {
@@ -37,7 +38,9 @@ const DisplayCardArrival: React.FC<DisplayCardArrivalProps> = ({
 	return (
 		<div className={styles.arrival}>
 			{timeToArrival}
-			<p className={styles.arrivalDestination}>{destination}</p>
+			<div className={styles.arrivalDestination}>
+				<ScrollingText text={destination} />
+			</div>
 		</div>
 	);
 };

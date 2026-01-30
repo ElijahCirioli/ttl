@@ -3,7 +3,7 @@
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { redirect } from "next/navigation";
-import { ReactElement, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { addAndRemoveCards } from "@/actions/addAndRemoveCards";
 import { getStops } from "@/actions/getStops";
 import Profile from "@/lib/models/Profile";

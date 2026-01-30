@@ -10,6 +10,7 @@ interface Arrival {
 	routeId: string;
 	destination: string;
 	time: number;
+	arrivalId: string;
 	status: ArrivalStatus;
 	alert?: string;
 }

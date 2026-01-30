@@ -30,12 +30,12 @@ const DisplayCard: React.FC<DisplayCardProps> = ({
 		.toSorted((a, b) => a.time - b.time)
 		.slice(0, collapsed ? 1 : 3)
 		.filter((arrival) => arrival.time - currentTime < 12 * 60 * 60 * 1000)
-		.map((arrival, i) => (
+		.map((arrival) => (
 			<DisplayCardArrival
 				destination={arrival.destination}
 				currentTime={currentTime}
 				arrivalTime={arrival.time}
-				key={i}
+				key={arrival.arrivalId}
 			></DisplayCardArrival>
 		));
 	if (arrivalElements.length === 0) {

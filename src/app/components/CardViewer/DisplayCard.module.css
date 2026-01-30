@@ -60,8 +60,8 @@
 	flex-wrap: nowrap;
 	justify-content: flex-start;
 	align-items: flex-start;
-	padding: 0.35em 1.2em;
-	width: calc(100% - 2.4em);
+	padding: 0.35em 1.1em;
+	width: calc(100% - 2.2em);
 }
 
 .editing {

@@ -13,9 +13,7 @@
 	font-weight: bold;
 	font-size: 1.1em;
 	text-align: left;
-	min-width: 3.4em;
-	width: auto;
-	max-width: max-content;
+	flex-basis: 3.4em;
 	margin: 0;
 	display: block;
 }
@@ -27,7 +25,6 @@
 .arrivalDestination {
 	font-size: 1.1em;
 	margin: 0;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
+	flex-grow: 1;
+	min-width: 0;
 }

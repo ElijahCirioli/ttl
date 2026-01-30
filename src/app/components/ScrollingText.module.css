@@ -1,0 +1,41 @@
+.textWrap {
+	display: block;
+	width: 100%;
+	text-wrap: nowrap;
+	overflow: hidden;
+	position: relative;
+}
+
+.textWrap p {
+	margin: 0;
+}
+
+.measuringText {
+	visibility: hidden;
+	width: fit-content;
+}
+
+.scrollingText {
+	position: absolute;
+	top: 0;
+	animation: scrolling 10s linear infinite;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	gap: 1em;
+}
+
+.staticText {
+	position: absolute;
+	top: 0;
+}
+
+@keyframes scrolling {
+	0% {
+		transform: translate(0, 0);
+	}
+
+	100% {
+		transform: translate(calc(-50% - 0.5em), 0);
+	}
+}

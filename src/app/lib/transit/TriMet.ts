@@ -152,6 +152,7 @@ class TriMet implements TransitService {
 					stopId,
 					routeId: `${arrival.route}`,
 					destination: destination,
+					arrivalId: arrival.id,
 					time: arrival.estimated ?? arrival.scheduled,
 					status: this.arrivalStatusConverter(arrival.status),
 				});
