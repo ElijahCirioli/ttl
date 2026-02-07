@@ -4,11 +4,12 @@ import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
-import { addAndRemoveCards } from "@/actions/addAndRemoveCards";
 import { getStops } from "@/actions/getStops";
+import { putCards } from "@/actions/putCards";
+import Card from "@/lib/models/Card";
 import Profile from "@/lib/models/Profile";
-import Route, { RouteId, RouteType } from "@/lib/models/Route";
-import Stop, { StopId } from "@/lib/models/Stop";
+import { RouteId, RouteType } from "@/lib/models/Route";
+import { StopId } from "@/lib/models/Stop";
 import StopService from "@/lib/models/StopService";
 import StopRow from "@/components/StopBrowser/StopRow";
 import SpinnerIcon from "@/components/icons/SpinnerIcon";
@@ -24,11 +25,9 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [coordinatesMessage, setCoordinatesMessage] = useState<string | null>(null);
 	const [filters, setFilters] = useState<Map<RouteType, boolean>>(new Map());
-
-	// Save the combinations of routes and stops that we are modifying as a tuple [stopId, routeId]
-	const [routesToAddById, setRoutesToAddById] = useState<Map<StopId, Set<RouteId>>>(new Map());
-	const [routesToRemoveById, setRoutesToRemoveById] = useState<Map<StopId, Set<RouteId>>>(new Map());
-	const savedSelectedRoutesById = new Map(profile.cards.map((card) => [card.stop.id, new Set(card.route.id)]));
+	const [updatedCardIds, setUpdatedCardIds] = useState<[StopId, RouteId][]>(
+		profile.cards.map((card) => [card.stop.id, card.route.id])
+	);
 
 	useEffect(() => {
 		navigator.geolocation.getCurrentPosition(
@@ -86,40 +85,58 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 	}
 
 	function isRouteSelected(stopId: StopId, routeId: RouteId): boolean {
-		return (
-			(savedSelectedRoutesById.get(stopId)?.has(routeId) && !routesToRemoveById.get(stopId)?.has(routeId)) ||
-			routesToAddById.get(stopId)?.has(routeId) === true
-		);
+		return !!updatedCardIds.find(([cardStopId, cardRouteId]) => cardStopId === stopId && cardRouteId === routeId);
 	}
 
 	function selectRoute(stopId: StopId, routeId: RouteId): void {
-		const maybeRemoveStopRoutes = routesToRemoveById.get(stopId);
-		if (maybeRemoveStopRoutes && maybeRemoveStopRoutes.has(routeId)) {
-			routesToRemoveById.set(stopId, maybeRemoveStopRoutes.difference(new Set([routeId])));
-			setRoutesToRemoveById(new Map(routesToRemoveById));
-		} else {
-			const addStopRoutes = routesToAddById.get(stopId) ?? new Set();
-			routesToAddById.set(stopId, addStopRoutes.union(new Set([routeId])));
-			setRoutesToAddById(new Map(routesToAddById));
+		if (!isRouteSelected(stopId, routeId)) {
+			setUpdatedCardIds([...updatedCardIds, [stopId, routeId]]);
 		}
 	}
 
 	function unselectRoute(stopId: StopId, routeId: RouteId): void {
-		const maybeAddStopRoutes = routesToAddById.get(stopId);
-		if (maybeAddStopRoutes && maybeAddStopRoutes.has(routeId)) {
-			routesToAddById.set(stopId, maybeAddStopRoutes.difference(new Set([routeId])));
-			setRoutesToAddById(new Map(routesToAddById));
-		} else {
-			const removeStopRoutes = routesToRemoveById.get(stopId) ?? new Set();
-			routesToRemoveById.set(stopId, (removeStopRoutes ?? new Set()).union(new Set([routeId])));
-			setRoutesToRemoveById(new Map(routesToRemoveById));
-		}
+		setUpdatedCardIds(
+			updatedCardIds.filter(([cardStopId, cardRouteId]) => cardStopId !== stopId || cardRouteId !== routeId)
+		);
 	}
 
 	function toggleFilter(routeType: RouteType): void {
 		const newFilters = new Map(filters);
 		newFilters.set(routeType, !filters.get(routeType));
 		setFilters(newFilters);
+	}
+
+	function submit() {
+		if (stops === null) {
+			return;
+		}
+
+		const updatedCards = updatedCardIds
+			.map(([stopId, routeId]) => buildCard(stopId, routeId))
+			.filter((card) => card !== undefined);
+
+		// Recalculate which cards will appear identical and therefore require disambiguation
+		Object.values(Object.groupBy(updatedCards, (card) => `${card.stop.location} | ${card.route.name}`)).forEach(
+			(identicalCards) =>
+				identicalCards?.forEach((card) => (card.disambiguationRequired = identicalCards.length > 1))
+		);
+
+		putCards(profile.id, updatedCards);
+	}
+
+	function buildCard(stopId: StopId, routeId: RouteId): Card | undefined {
+		const stopService = stops?.find((stopService) => stopService.stop.id === stopId);
+		const route = stopService?.routes.find((route) => route.id === routeId);
+		if (route && stopService) {
+			// Even if this card already exists in the profile we would rather redefine it in order to populate new information
+			return {
+				stop: stopService.stop,
+				route: route,
+				disambiguationRequired: false,
+			};
+		} else {
+			return profile.cards.find((card) => card.stop.id === stopId && card.route.id === routeId);
+		}
 	}
 
 	const filteredStops = stops.flatMap((stopService) => {
@@ -131,30 +148,6 @@ const StopBrowser: React.FC<StopBrowserProps> = ({ profile }: StopBrowserProps) 
 		}
 		return [{ ...stopService, routes: filteredRoutes }];
 	});
-
-	function submit() {
-		if (stops === null) {
-			return;
-		}
-		const routesById = new Map<StopId, Map<RouteId, [Stop, Route]>>(
-			stops.map((stopService) => [
-				stopService.stop.id,
-				new Map(stopService.routes.map((route) => [route.id, [stopService.stop, route]])),
-			])
-		);
-		const routesToAdd = Array.from(routesToAddById)
-			.flatMap(([stopId, routeIds]) =>
-				Array.from(routeIds).map((routeId) => routesById.get(stopId)?.get(routeId))
-			)
-			.filter((route) => route !== undefined);
-		const routesToRemove = Array.from(routesToRemoveById)
-			.flatMap(([stopId, routeIds]) =>
-				Array.from(routeIds).map((routeId) => routesById.get(stopId)?.get(routeId))
-			)
-			.filter((route) => route !== undefined);
-
-		addAndRemoveCards(profile.id, routesToAdd, routesToRemove);
-	}
 
 	return (
 		<>
